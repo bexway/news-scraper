@@ -1,7 +1,11 @@
 var mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    trim: true,
+    required: true,
+  },
   comment_ids: [Schema.Types.ObjectId]
 });
 

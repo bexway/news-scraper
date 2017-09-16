@@ -5,10 +5,18 @@ var mongoose = require("mongoose");
 var ArticleSchema = new mongoose.Schema({
   headline: {
     type: String,
+    trim: true,
+    required: true,
     index: true
   },
-  summary: String,
-  url: String,
+  summary: {
+    type: String,
+    trim: true
+  },
+  url: {
+    type: String,
+    trim: true
+  },
   comment_ids: [Schema.Types.ObjectId]
 });
 
