@@ -6,12 +6,14 @@ var CommentSchema = new mongoose.Schema({
     trim: true,
     required: true
   },
-  article_id: {
+  article: {
     type: Schema.Types.ObjectId,
+    ref: "Article",
     required:true
   },
-  user_id: {
+  user: {
     type: Schema.Types.ObjectId,
+    ref: "User",
     required:true
   }
 });

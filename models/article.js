@@ -2,12 +2,14 @@
 
 var mongoose = require("mongoose");
 
+// TODO: investigate this to prevent duplicate articles? (maybe create a validation function for it, and find a way to catch that message?: https://stackoverflow.com/questions/23760253/mongoose-custom-validation-using-2-fields
 var ArticleSchema = new mongoose.Schema({
   headline: {
     type: String,
     trim: true,
     required: true,
-    index: true
+    index: true,
+    unique: "Article must be unique"
   },
   summary: {
     type: String,
@@ -17,7 +19,10 @@ var ArticleSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  comment_ids: [Schema.Types.ObjectId]
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 });
 
 var Article = mongoose.model('Article', ArticleSchema);

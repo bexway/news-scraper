@@ -15,13 +15,26 @@ app.use(express.static("public"));
 var connection = require("./config/connection.js");
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Models
+var article = require("./models/article.js");
+var user = require("./models/user.js");
+var comment = require("./models/comment.js");
+
 // Routes
 app.get("/", function(req, res) {
   res.send("Hello world");
+  //scrape news articles into db and display
+  //TODO: request info, convert info into objects, push objects into db
+  //TODO: if pushing the object into the db returns a uniqueness error, retrieve that article from the db and display it
+  //https://stackoverflow.com/questions/21638982/mongoose-detect-if-document-inserted-is-a-duplicate-and-if-so-return-the-exist
 });
 
 app.get("/write", function(req, res) {
     res.send("write comment");
+    // use $push to push a comment to an article. use new:true to make sure the article with comment added gets returned
+    //As part of adding the comment, update the article
+    //.populate(comments) (and you can chain .populate)
+    //then use .exec(callback) to run whatever
 });
 
 app.get("/comments", function(req, res) {

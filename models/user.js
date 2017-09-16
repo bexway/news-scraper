@@ -6,7 +6,21 @@ var UserSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  comment_ids: [Schema.Types.ObjectId]
+  password: {
+    type: String,
+    trim: true,
+    required: "Password is Required",
+    validate: [
+      function(input) {
+        return input.length >= 6;
+      },
+      "Password should be longer."
+    ]
+  },
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 });
 
 var User = mongoose.model('User', UserSchema);
