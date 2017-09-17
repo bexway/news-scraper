@@ -24,53 +24,51 @@ var Comment = require("./models/comment.js");
 
 // Routes
 app.get("/scrape", function(req, res) {
-  // res.send("Hello world");
-  //scrape news articles into db and display
-  //TODO: request info, convert info into objects, push objects into db
-  //TODO: if pushing the object into the db returns a uniqueness error, retrieve that article from the db and display it
-  //https://stackoverflow.com/questions/21638982/mongoose-detect-if-document-inserted-is-a-duplicate-and-if-so-return-the-exist
-
-  //TODO: remove this line before production; needed to prevent duplicates while I haven't written handling for them
-  connection.db.dropCollection('articles', function(err, result) { });
-
   request("http://www.echojs.com/", function(error, response, html) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
-    var entriesList = [];
-    // Now, we grab every h2 within an article tag, and do the following:
+    var entriesList = [];    
+    // async each: https://stackoverflow.com/questions/23608325/each-and-callbacks
+    // create resolved promise to start chain
+    var p = Promise.resolve();
     $("article h2").each(function(i, element) {
-
-      // Save an empty result object
-      var result = {};
-
-      // Add the text and href of every link, and save them as properties of the result object
-      result.headline = $(this).children("a").text();
-      result.summary = "placeholder"
-      result.url = $(this).children("a").attr("href");
-
-      // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
-      var entry = new Article(result);
-
-      // Now, save that entry to the db
-      entry.save(function(err, doc) {
-        // Log any errors
-        if (err) {
-          // console.log(err);
-        }
-        // Or log the doc
-        else {
-          // console.log(doc);
-        }
-      });
-
-      // TODO: add if clause to err to account for duplicates (set the correct one to entry if err)
-
-      entriesList.push(entry);
-
+      // each step of the each loop waits for the next to finish, and returns a new promise to continue the chain
+      p = p.then(function(){ 
+        var result = {};
+        result.headline = $(element).children("a").text();
+        result.summary = "placeholder"
+        result.url = $(element).children("a").attr("href");
+        var entry = new Article(result);
+        // save to db
+        return new Promise(function(resolve, reject){
+          entry.save(function(err, doc) {
+            if (err) {
+              // if duplicate article error, find the existing entry and add it to display list
+              if(err.code===11000){
+                Article.findOne({ "headline": result.headline, "summary": result.summary }, function(err, doc){
+                  if(err){
+                    console.log(err);
+                  } else{
+                    entriesList.push(doc);
+                  }
+                  resolve();   
+                })
+              } 
+            }
+            // If not duplicate, push the entry to the display list
+            else {
+              entriesList.push(entry);
+              resolve();
+            }
+          });
+        });
+      });    
     });
-    // send back scraped data
-    res.send(entriesList);
+    // in the final p, after .each has completed, send back scraped data
+    p.then(function(){
+      res.send(entriesList);
+    }).catch(function(err){
+      console.log(err);
+    })
   });
   
 });
