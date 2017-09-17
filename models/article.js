@@ -1,6 +1,7 @@
 // https://stackoverflow.com/questions/9230932/file-structure-of-mongoose-nodejs-project
 
 var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 
 // TODO: investigate this to prevent duplicate articles? (maybe create a validation function for it, and find a way to catch that message?: https://stackoverflow.com/questions/23760253/mongoose-custom-validation-using-2-fields
 var ArticleSchema = new mongoose.Schema({

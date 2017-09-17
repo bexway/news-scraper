@@ -3,6 +3,8 @@ var express = require("express");
 var request = require("request");
 var cheerio = require("cheerio");
 var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+mongoose.Promise = require('bluebird');
 
 // Initialize Express
 var app = express();
@@ -16,17 +18,61 @@ var connection = require("./config/connection.js");
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Models
-var article = require("./models/article.js");
-var user = require("./models/user.js");
-var comment = require("./models/comment.js");
+var Article = require("./models/article.js");
+var User = require("./models/user.js");
+var Comment = require("./models/comment.js");
 
 // Routes
-app.get("/", function(req, res) {
-  res.send("Hello world");
+app.get("/scrape", function(req, res) {
+  // res.send("Hello world");
   //scrape news articles into db and display
   //TODO: request info, convert info into objects, push objects into db
   //TODO: if pushing the object into the db returns a uniqueness error, retrieve that article from the db and display it
   //https://stackoverflow.com/questions/21638982/mongoose-detect-if-document-inserted-is-a-duplicate-and-if-so-return-the-exist
+
+  //TODO: remove this line before production; needed to prevent duplicates while I haven't written handling for them
+  connection.db.dropCollection('articles', function(err, result) { });
+
+  request("http://www.echojs.com/", function(error, response, html) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(html);
+    var entriesList = [];
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("article h2").each(function(i, element) {
+
+      // Save an empty result object
+      var result = {};
+
+      // Add the text and href of every link, and save them as properties of the result object
+      result.headline = $(this).children("a").text();
+      result.summary = "placeholder"
+      result.url = $(this).children("a").attr("href");
+
+      // Using our Article model, create a new entry
+      // This effectively passes the result object to the entry (and the title and link)
+      var entry = new Article(result);
+
+      // Now, save that entry to the db
+      entry.save(function(err, doc) {
+        // Log any errors
+        if (err) {
+          // console.log(err);
+        }
+        // Or log the doc
+        else {
+          // console.log(doc);
+        }
+      });
+
+      // TODO: add if clause to err to account for duplicates (set the correct one to entry if err)
+
+      entriesList.push(entry);
+
+    });
+    // send back scraped data
+    res.send(entriesList);
+  });
+  
 });
 
 app.get("/write", function(req, res) {
