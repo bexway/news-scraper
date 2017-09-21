@@ -24,9 +24,9 @@ var Comment = require("./models/comment.js");
 
 // Routes
 app.get("/scrape", function(req, res) {
-  Article.remove({}, function(err) { 
-    console.log('collection removed') 
-  });
+  // Article.remove({}, function(err) { 
+  //   console.log('collection removed') 
+  // });
   request("https://www.nytimes.com/", function(error, response, html) {
     var $ = cheerio.load(html);
     var entriesList = [];    
@@ -61,7 +61,6 @@ app.get("/scrape", function(req, res) {
               } 
               else{
                 console.log("ERROR SAVING ARTICLE: "+err)
-                console.log($(element).html())
                 resolve();
               }
             }
