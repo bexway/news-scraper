@@ -85,10 +85,18 @@ app.get("/scrape", function(req, res) {
 
 app.get("/write", function(req, res) {
     res.send("write comment");
-    // use $push to push a comment to an article. use new:true to make sure the article with comment added gets returned
-    //As part of adding the comment, update the article
-    //.populate(comments) (and you can chain .populate)
-    //then use .exec(callback) to run whatever
+});
+
+app.post("/write", function(req, res) {
+  console.log(req.body.user_name)
+
+  var comment = new Comment(result);
+  res.send("Comment saved!");
+
+  // use $push to push a comment to an article. use new:true to make sure the article with comment added gets returned
+  //As part of adding the comment, update the article
+  //.populate(comments) (and you can chain .populate)
+  //then use .exec(callback) to run whatever
 });
 
 app.get("/comments", function(req, res) {
