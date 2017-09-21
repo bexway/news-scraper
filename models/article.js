@@ -18,7 +18,8 @@ var ArticleSchema = new mongoose.Schema({
   },
   url: {
     type: String,
-    trim: true
+    trim: true,
+    required: true
   },
   comments: [{
     type: Schema.Types.ObjectId,

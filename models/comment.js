@@ -12,11 +12,17 @@ var CommentSchema = new mongoose.Schema({
     ref: "Article",
     required:true
   },
+  //For now, I'm using a simple string until I have time to code a simple authentication
   user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
+    trim: true,
     required:true
   }
+  // user: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "User",
+  //   required:true
+  // }
 });
 
 var Comment = mongoose.model('Comment', CommentSchema);

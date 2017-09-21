@@ -24,19 +24,25 @@ var Comment = require("./models/comment.js");
 
 // Routes
 app.get("/scrape", function(req, res) {
-  request("http://www.echojs.com/", function(error, response, html) {
+  Article.remove({}, function(err) { 
+    console.log('collection removed') 
+  });
+  request("https://www.nytimes.com/", function(error, response, html) {
     var $ = cheerio.load(html);
     var entriesList = [];    
     // async each: https://stackoverflow.com/questions/23608325/each-and-callbacks
     // create resolved promise to start chain
+    var i = 0;
     var p = Promise.resolve();
-    $("article h2").each(function(i, element) {
+    $("article.story").each(function(i, element) {
       // each step of the each loop waits for the next to finish, and returns a new promise to continue the chain
       p = p.then(function(){ 
         var result = {};
-        result.headline = $(element).children("a").text();
-        result.summary = "placeholder"
-        result.url = $(element).children("a").attr("href");
+        result.headline = $(element).find("h1.story-heading").text().trim() || 
+        $(element).find("h2.story-heading").text().trim() || 
+        $(element).find("h3.story-heading").text().trim();
+        result.summary = $(element).children("p.summary").text().trim() || ""
+        result.url = $(element).find("a").attr("href")||$(element).children("a.story-link");
         var entry = new Article(result);
         // save to db
         return new Promise(function(resolve, reject){
@@ -53,6 +59,11 @@ app.get("/scrape", function(req, res) {
                   resolve();   
                 })
               } 
+              else{
+                console.log("ERROR SAVING ARTICLE: "+err)
+                console.log($(element).html())
+                resolve();
+              }
             }
             // If not duplicate, push the entry to the display list
             else {
