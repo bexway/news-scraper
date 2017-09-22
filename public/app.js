@@ -4,6 +4,7 @@
     $.getJSON("/scrape", function(data) {
         // For each one
         console.log(data)
+        ////TODO: better error handling in for loop
         for (var i = 0; i < data.length; i++) {
             // TODO: separate display for things that do or don't have summaries
             var article = $('<div>').addClass("article").attr("data-id", data[i]._id)
@@ -38,17 +39,18 @@
             method: "POST",
             url: "/write",
             data: {
-                _id: form.parent().attr("data-id"),
-                user_name: form.find(".user_name").val(),
-                comment: form.find(".comment").val()
+                article: form.parent().attr("data-id"),
+                user: form.find(".user_name").val(),
+                textContent: form.find(".comment").val()
             }
         })
         .done(function(data) {
+            //TODO: hide the comment submission, and append a message onto that article saying the comment was submitted. 
             console.log(data);
         });
     
         form.find(".user_name").val("");
-        form.find(".comment").val("");
+        form.find(".comment").val("");   
     });
     
     // $(".comment-submit-btn").submit(function(event) {

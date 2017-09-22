@@ -88,10 +88,45 @@ app.get("/write", function(req, res) {
 });
 
 app.post("/write", function(req, res) {
-  console.log(req.body.user_name)
-
-  var comment = new Comment(result);
-  res.send("Comment saved!");
+  console.log(req.body)
+  var comment = new Comment(req.body);
+  comment.save(function(err, commentDoc) {
+    if(err){
+      if(err.code===11000){
+        res.send("Sorry, we couldn't submit your comment! Please make sure you've filled out both of the boxes before clicking the submit button.")
+      }
+      res.send("Sorry, something went wrong with submitting your comment! Please fill out the fields and try again.")
+    }
+    else{
+      // Find the corresponding article and add the comment
+      // Article.findOne({ "_id": req.body.article}, function(err, ArticleDoc){
+      //   if(err){
+      //     console.log(err);
+      //     res.send("Sorry, we can't seem to find that article! Please refresh and try commenting again.")
+      //   } else{
+      //     console.log(commentDoc._id)
+      //     ArticleDoc.comments.$push(commentDoc._id);
+      //     res.send("Thanks for submitting your comment on this article!");
+      //   }  
+      // });
+      Article.findByIdAndUpdate(
+        { "_id": req.body.article }, 
+        { "$push": { "comments": commentDoc._id }},
+        {"new": true},
+        function(err, articleDoc) {
+          if(err){
+            console.log(err);
+            res.send("Sorry, we can't seem to find that article! Please refresh and try commenting again.")
+          } else{
+            console.log(commentDoc._id);
+            console.log(articleDoc)
+            res.send("Thanks for submitting your comment on this article!");
+          }
+        }
+       ) 
+    }
+  })
+  
 
   // use $push to push a comment to an article. use new:true to make sure the article with comment added gets returned
   //As part of adding the comment, update the article
@@ -105,6 +140,6 @@ app.get("/comments", function(req, res) {
 });
 
 // Set the app to listen on port 3000
-app.listen(process.env.PORT || 3000, function() {
+app.listen(process.env.PORT || 3010, function() {
   console.log("App running!");
 });
