@@ -6,6 +6,10 @@
     border: 2px solid black;
 }
 
+.comment {
+    border: 2px solid black;
+}
+
 .headline{
     font-size: 2em;
     font-weight: bold;
