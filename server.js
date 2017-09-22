@@ -4,6 +4,7 @@ var request = require("request");
 var cheerio = require("cheerio");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var path = require("path");
 mongoose.Promise = require('bluebird');
 
 // Initialize Express
@@ -24,9 +25,6 @@ var Comment = require("./models/comment.js");
 
 // Routes
 app.get("/scrape", function(req, res) {
-  // Article.remove({}, function(err) { 
-  //   console.log('collection removed') 
-  // });
   request("https://www.nytimes.com/", function(error, response, html) {
     var $ = cheerio.load(html);
     var entriesList = [];    
@@ -115,13 +113,12 @@ app.post("/write", function(req, res) {
 });
 
 app.get("/comments", function(req, res) {
-    res.send("test");
+  res.sendFile(path.join(__dirname, "./public/comments.html"));
 });
 
 app.get("/api/comments", function(req, res) {
   // If I want to limit by user, this might help later on: https://stackoverflow.com/questions/15102532/mongo-find-through-list-of-ids
   Comment.find({}).populate("article").exec(function(err, doc){
-    console.log(doc);
     res.send(doc);
   });
 });
