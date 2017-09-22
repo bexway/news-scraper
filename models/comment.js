@@ -12,7 +12,7 @@ var CommentSchema = new mongoose.Schema({
     ref: "Article",
     required:true
   },
-  //For now, I'm using a simple string until I have time to code a simple authentication
+  //For now, I'm using a simple string until I have time to code a user authentication
   user: {
     type: String,
     trim: true,

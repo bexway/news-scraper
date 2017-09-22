@@ -83,10 +83,6 @@ app.get("/scrape", function(req, res) {
   
 });
 
-app.get("/write", function(req, res) {
-    res.send("write comment");
-});
-
 app.post("/write", function(req, res) {
   console.log(req.body)
   var comment = new Comment(req.body);
@@ -99,16 +95,6 @@ app.post("/write", function(req, res) {
     }
     else{
       // Find the corresponding article and add the comment
-      // Article.findOne({ "_id": req.body.article}, function(err, ArticleDoc){
-      //   if(err){
-      //     console.log(err);
-      //     res.send("Sorry, we can't seem to find that article! Please refresh and try commenting again.")
-      //   } else{
-      //     console.log(commentDoc._id)
-      //     ArticleDoc.comments.$push(commentDoc._id);
-      //     res.send("Thanks for submitting your comment on this article!");
-      //   }  
-      // });
       Article.findByIdAndUpdate(
         { "_id": req.body.article }, 
         { "$push": { "comments": commentDoc._id }},
@@ -118,25 +104,26 @@ app.post("/write", function(req, res) {
             console.log(err);
             res.send("Sorry, we can't seem to find that article! Please refresh and try commenting again.")
           } else{
-            console.log(commentDoc._id);
-            console.log(articleDoc)
-            res.send("Thanks for submitting your comment on this article!");
+            res.send(articleDoc);
           }
         }
        ) 
     }
   })
-  
-
-  // use $push to push a comment to an article. use new:true to make sure the article with comment added gets returned
-  //As part of adding the comment, update the article
   //.populate(comments) (and you can chain .populate)
   //then use .exec(callback) to run whatever
 });
 
 app.get("/comments", function(req, res) {
-    // If I want to limit by user, this might help later on: https://stackoverflow.com/questions/15102532/mongo-find-through-list-of-ids
-    res.send("see comments");
+    res.send("test");
+});
+
+app.get("/api/comments", function(req, res) {
+  // If I want to limit by user, this might help later on: https://stackoverflow.com/questions/15102532/mongo-find-through-list-of-ids
+  Comment.find({}).populate("article").exec(function(err, doc){
+    console.log(doc);
+    res.send(doc);
+  });
 });
 
 // Set the app to listen on port 3000
