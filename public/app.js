@@ -24,8 +24,9 @@ $(document).ready(function(){
                 <textarea class="comment" name="comment"></textarea>
             </div>
             <button class="comment-submit-btn btn" type="button">Submit your comment</button>
-    
+            
             </form>
+            <div class="comment-message"></div>
             </div>`));
             //TODO: If I have time, add something in the server scraping that will check for comments (in the case of existing articles) and list them
             $("#articles").append(article)
@@ -48,6 +49,13 @@ $(document).ready(function(){
         .done(function(data) {
             //TODO: hide the comment submission, and append a message onto that article saying the comment was submitted/displaying an error message
             console.log(data);
+            form.parent().children(".comment-message").empty();
+            if(typeof(data)==="object"){
+                form.parent().children(".comment-message").append($("<p>").text("Thanks for submitting your comment! It's been processed successfully."))
+            } else {
+                form.parent().children(".comment-message").append($("<p>").text("Sorry, something went wrong with submitting your comment! Please make sure all forms are filled out and try again."))
+            }
+            
         });
     
         form.find(".user_name").val("");
