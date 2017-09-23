@@ -52,7 +52,9 @@ app.get("/scrape", function(req, res) {
                   if(err){
                     console.log(err);
                   } else{
-                    entriesList.push(doc);
+                    if(doc != null){
+                      entriesList.push(doc);
+                    }
                   }
                   resolve();   
                 })
@@ -64,7 +66,9 @@ app.get("/scrape", function(req, res) {
             }
             // If not duplicate, push the entry to the display list
             else {
-              entriesList.push(entry);
+              if(entry != null){
+                entriesList.push(entry);
+              }
               resolve();
             }
           });
