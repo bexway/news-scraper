@@ -1,10 +1,16 @@
 var mongoose = require('mongoose');
 
-var connection = mongoose.connect('mongodb://localhost/newsscraper', {
+try {
+  var connection = mongoose.connect(MONGODB_URI, {
     useMongoClient: true,
     /* other options */
   })
-// change when deploying
-// mongoose.connect(MONGODB_URI)
+}
+catch (e) {
+  var connection = mongoose.connect('mongodb://localhost/newsscraper', {
+    useMongoClient: true,
+    /* other options */
+  })
+}
 
 module.exports = connection;
