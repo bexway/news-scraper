@@ -90,6 +90,7 @@ app.post("/write", function(req, res) {
   var comment = new Comment(req.body);
   comment.save(function(err, commentDoc) {
     if(err){
+      console.log(err)
       if(err.code===11000){
         res.send("Sorry, we couldn't submit your comment! Please make sure you've filled out both of the boxes before clicking the submit button.")
       }
@@ -112,8 +113,6 @@ app.post("/write", function(req, res) {
        ) 
     }
   })
-  //.populate(comments) (and you can chain .populate)
-  //then use .exec(callback) to run whatever
 });
 
 app.get("/comments", function(req, res) {
@@ -122,7 +121,9 @@ app.get("/comments", function(req, res) {
 
 app.get("/api/comments", function(req, res) {
   // If I want to limit by user, this might help later on: https://stackoverflow.com/questions/15102532/mongo-find-through-list-of-ids
-  Comment.find({}).populate("article").exec(function(err, doc){
+  Comment.find({})
+  .populate("article")
+  .exec(function(err, doc){
     res.send(doc);
   });
 });
