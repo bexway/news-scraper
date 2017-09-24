@@ -8,8 +8,7 @@ var ArticleSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
-    index: true,
-    unique: "Article must be unique"
+    unique: true
   },
   summary: {
     type: String,
@@ -18,7 +17,8 @@ var ArticleSchema = new mongoose.Schema({
   url: {
     type: String,
     trim: true,
-    required: true
+    required: true,
+    unique: true
   },
   comments: [{
     type: Schema.Types.ObjectId,
