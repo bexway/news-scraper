@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 
-
 var connection = mongoose.connect(process.env.MONGODB_URI, {
   useMongoClient: true,
 })
@@ -8,6 +7,5 @@ var connection = mongoose.connect(process.env.MONGODB_URI, {
 // var connection = mongoose.connect('mongodb://localhost/newsscraper', {
 //   useMongoClient: true,
 // })
-
 
 module.exports = connection;
