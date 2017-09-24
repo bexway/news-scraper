@@ -48,7 +48,7 @@ app.get("/scrape", function(req, res) {
             if (err) {
               // if duplicate article error, find the existing entry and add it to display list
               if(err.code===11000){
-                Article.findOne({ "headline": result.headline, "summary": result.summary })
+                Article.findOne({ "headline": result.headline })
                 .populate("comments")
                 .exec(function(err, doc){
                   if(err){
