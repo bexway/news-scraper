@@ -5,13 +5,19 @@ $(document).ready(function(){
     $.getJSON("/scrape", function(data) {
         // For each one
         for (var i = 0; i < data.length; i++) {
+            // If there are comments, create a div with them to append later
+            var commentsDiv = $('<div>').addClass("view-comments");
             if(data[i].comments.length > 0){
-                console.log(data[i].comments);
+                commentsDiv.append($('<button>').addClass("comment-view-btn btn").text("View comments"));
+                for(var c in data[i].comments){
+                    var cdiv = $('<div>').addClass("article-comment hidden");
+                    cdiv.append($('<p>').text(data[i].comments[c].user+":\n"+data[i].comments[c].textContent).addClass('comment-text'));
+                    commentsDiv.append(cdiv);
+                }
             }
             var article = $('<div>').addClass("article").attr("data-id", data[i]._id)
             article.append($('<a>').addClass("headline").attr("href", data[i].url).text(data[i].headline));
             article.append($('<p>').addClass("summary").text(data[i].summary))
-            // article.append($('<button>').addClass("comment-reveal-btn btn").text("Add Comment"))
             article.append($(`<div class="add-comment-section">
             <button class="comment-reveal-btn btn">Add Comment</button>
             <form class="comment-form hidden" action="/write" method="post">
@@ -28,7 +34,7 @@ $(document).ready(function(){
             </form>
             <div class="comment-message"></div>
             </div>`));
-            //TODO: If I have time, add something in the server scraping that will check for comments (in the case of existing articles) and list them
+            article.append(commentsDiv)
             $("#articles").append(article)
         }
     });
@@ -36,6 +42,7 @@ $(document).ready(function(){
     $(document).on("click", ".comment-submit-btn", function(event) {
         event.preventDefault();
         var form = $(this).parent();
+        console.log(form.parent().parent().attr("data-id"))
     
         $.ajax({
             method: "POST",
@@ -47,8 +54,7 @@ $(document).ready(function(){
             }
         })
         .done(function(data) {
-            //TODO: hide the comment submission, and append a message onto that article saying the comment was submitted/displaying an error message
-            console.log(data);
+            //TODO: hide the comment submission
             form.parent().children(".comment-message").empty();
             if(typeof(data)==="object"){
                 form.parent().children(".comment-message").append($("<p>").text("Thanks for submitting your comment! It's been processed successfully."))
@@ -69,6 +75,10 @@ $(document).ready(function(){
         } else{
             $(this).text("Add Comment");
         }
+    });
+
+    $(document).on("click", ".comment-view-btn", function(event) {
+        $(this).parent().children(".article-comment").toggle();
     });
 
 

@@ -6,6 +6,10 @@
     border: 2px solid black;
 }
 
+.article-comment{
+    border-bottom: 1px solid black;
+}
+
 .comment {
     border: 2px solid black;
 }
