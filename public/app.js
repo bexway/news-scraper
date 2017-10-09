@@ -22,15 +22,15 @@ $(document).ready(function(){
             commentContainer.append($(`<div class="add-comment-section">
             <button class="comment-reveal-btn btn">Add Comment</button>
             <form class="comment-form hidden" action="/write" method="post">
-            <div>
-                <label for="user_name">Name:</label>
-                <input type="text" class="user_name" name="user_name">
-            </div>
-            <div>
-                <label for="comment">Comment:</label>
-                <textarea class="comment" name="comment"></textarea>
-            </div>
-            <button class="comment-submit-btn btn" type="button">Submit your comment</button>
+                <div>
+                    <label for="user_name">Name:</label>
+                    <input type="text" class="user_name" name="user_name">
+                </div>
+                <div>
+                    <label for="comment">Comment:</label>
+                    <textarea class="comment" name="comment"></textarea>
+                </div>
+                <button class="comment-submit-btn btn" type="button">Submit your comment</button>
             
             </form>
             <div class="comment-message"></div>
@@ -44,13 +44,12 @@ $(document).ready(function(){
     $(document).on("click", ".comment-submit-btn", function(event) {
         event.preventDefault();
         var form = $(this).parent();
-        console.log(form.parent().parent().attr("data-id"))
     
         $.ajax({
             method: "POST",
             url: "/write",
             data: {
-                article: form.parent().parent().attr("data-id"),
+                article: form.parent().parent().parent().attr("data-id"),
                 user: form.find(".user_name").val(),
                 textContent: form.find(".comment").val()
             }
