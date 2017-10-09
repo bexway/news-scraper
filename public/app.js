@@ -15,10 +15,11 @@ $(document).ready(function(){
                     commentsDiv.append(cdiv);
                 }
             }
-            var article = $('<div>').addClass("article").attr("data-id", data[i]._id)
-            article.append($('<a>').addClass("headline").attr("href", data[i].url).text(data[i].headline));
+            var article = $('<div>').addClass("article card").attr("data-id", data[i]._id)
+            article.append($('<div>').addClass("card-header").append($('<a>').addClass("headline").attr("href", data[i].url).text(data[i].headline)));
             article.append($('<p>').addClass("summary").text(data[i].summary))
-            article.append($(`<div class="add-comment-section">
+            var commentContainer = $("<div>").addClass("comment-container flex flex-between")
+            commentContainer.append($(`<div class="add-comment-section">
             <button class="comment-reveal-btn btn">Add Comment</button>
             <form class="comment-form hidden" action="/write" method="post">
             <div>
@@ -34,7 +35,8 @@ $(document).ready(function(){
             </form>
             <div class="comment-message"></div>
             </div>`));
-            article.append(commentsDiv)
+            commentContainer.append(commentsDiv)
+            article.append(commentContainer)
             $("#articles").append(article)
         }
     });

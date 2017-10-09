@@ -4,6 +4,8 @@
 
 .article {
     border: 2px solid black;
+    width: 40%;
+    margin: .5em 0;
 }
 
 .article-comment{
@@ -35,6 +37,18 @@
     justify-content: space-around;
 }
 
+.flex-between{
+    justify-content: space-between;
+}
+
 .flex-center{
     justify-content: center;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
